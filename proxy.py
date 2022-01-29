@@ -92,11 +92,11 @@ class DynamicResolver(object):
         def host(localname):
             class listener(RecordUpdateListener):
                 def __init__(self):
-                    self.addrs = []
+                    self.addrs = set()
                     self.time = time.time()
                 def update_record(self, zc, now, record):
-                    if record.type == _TYPE_A and len(record.address) == 4:
-                        self.addrs.append(socket.inet_ntop(socket.AF_INET, record.address))
+                    if record.name == localname and record.type == _TYPE_A and len(record.address) == 4:
+                        self.addrs.add(socket.inet_ntop(socket.AF_INET, record.address))
             
             l = listener()
             q = DNSQuestion(localname, _TYPE_A, _CLASS_IN)
